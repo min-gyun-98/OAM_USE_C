@@ -28,7 +28,7 @@ int shmdt(const void *shmaddr);
 ```c
 int shmctl(int shmid, int cmd, struct shmid_ds *buf);
 ```
-### 공유 메모리를 사용 데이터 주고 받기 결과
+### 공유 메모리를 사용 데이터 송신, 수신 결과
 ![image](https://user-images.githubusercontent.com/82010586/125216377-fe3b5480-e2f8-11eb-9bce-eedb26d8b04b.png)
 
 ### 2. 메시지 큐
@@ -75,7 +75,7 @@ ssize_t msgrcv(int msqid, struct msgbuf *msgp, size_t msgsz, long msgtyp, int ms
 ```c
 int msgctl(int msqid, int cmd, struct msqid_ds *buf);
 ```
-### 메시지 큐 사용 데이터 주고 받기 결과
+### 메시지 큐 사용 데이터 송신, 수신 결과
 ![메시지 큐 실습 결과](https://user-images.githubusercontent.com/82010586/125218977-fed6e980-e2fe-11eb-9b15-f47674c0f14a.PNG)
 
 
@@ -142,7 +142,7 @@ write(int fd, const void *buf, int length);
 ```c
 close(int fd);
 ```
-### 소켓 사용 데이터 주고 받기 결과
+### 소켓 사용 데이터 송신, 수신 결과
 ![소켓 실습 결과1](https://user-images.githubusercontent.com/82010586/125223412-af94b700-e306-11eb-91b3-225dd47e39e6.PNG)
 ![소켓 실습 결과2](https://user-images.githubusercontent.com/82010586/125223413-b02d4d80-e306-11eb-882f-a725f35b8d7e.PNG)
 
@@ -180,4 +180,24 @@ close(int fd);
 ![실습2 실습 결과1](https://user-images.githubusercontent.com/82010586/125236450-f393b600-e31e-11eb-9207-7ed8aaa22e58.PNG)
 ![실습2 실습 결과2](https://user-images.githubusercontent.com/82010586/125236455-f4c4e300-e31e-11eb-987c-43f1ee5577a2.PNG)
 
-## 실습3
+## 실습3. EMS + emsd, agtd, 서비스(호처리) 프로그램 실습 (소켓, 메시지 큐 사용)
+- mmi(EMS + emsd) : 명령을 입력해서 전송하고, 명령을 수행한 결과 값을 출력해주는 역할(실습2의 client와 유사)
+- agtd : mmi의 서버가 되는 프로그램. 서비스 프로그램으로 명령어를 전달, 서비스 프로그램 결과값을 받아 mmi로 전송
+- 서비스(호처리) 프로그램 : 명령을 전송 받으면, 해당 명령을 처리하여 agtd에 전달해주는 프로그램(실습2의 server와 유사)
+- rstat : 리소스 상태 확인 명령어 수행 프로그램
+- prm : 프로세스 상태 확인 명령어 수행 프로그램
+- 실행 가능한 명령어 목록
+1. 리소스 상태 확인 기능
+- 명령어 : DIS-RESOURCE
+- 인자 : MEMORY(메모리 사용률 확인), DISK(디스크 사용률 확인), CPU(CPU 사용률 확인)
+2. 프로세스 상태 확인 기능
+- 명령어 : DIS-SW-STS
+- 인자 : ACT(rstat 프로세스 상태를 확인)
+
+### 프로그램 흐름
+![실습3 실행 순서](https://user-images.githubusercontent.com/82010586/125246566-e8478700-e32c-11eb-83c8-bcf481b03753.PNG)
+
+### 코드 실행 결과(rstat, prm은 실행중인 상태)
+![실습3 실행 결과1](https://user-images.githubusercontent.com/82010586/125254709-aec74980-e335-11eb-99d9-19be5045e3f9.PNG)
+![실습3 실행 결과2](https://user-images.githubusercontent.com/82010586/125254716-af5fe000-e335-11eb-9929-cf86d894b46b.PNG)
+
