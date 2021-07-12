@@ -29,15 +29,12 @@ int tcp_server_open(void) {
     // 3. listen
     if (listen(serv_sock, 5) < 0) return -3;
 
-    
+    printf("Server Listen\n");
     return serv_sock;
 }
 
 int tcp_server_worker(int fd, char *buf) 
 {
-    
-
-    printf("worker start\n");
     int i = 0;
     char* arg[4] = { "", "", "" };
     char send_buf[2048] = "";
@@ -47,7 +44,6 @@ int tcp_server_worker(int fd, char *buf)
     for (char* p = strtok(buf, "\n"); p; p = strtok(NULL, "\n")) {
         arg[i++] = p;
     }
-    printf("토큰 분리 성공\n");
     // 2. 아규먼트 별 명령 실행
     if (strcmp(arg[0], "list") == 0) {
         printf("list 명령 실행\n");
@@ -70,20 +66,19 @@ int tcp_server_worker(int fd, char *buf)
             fp = fopen(fname, "r");
             fscanf(fp, "%[^\n]", title);
             fclose(fp);
-
             sprintf(tmp, "%2d %s\n", j + 1, title);
             strcat(send_buf, tmp);
         }
     }
     else if (strcmp(arg[0], "write") == 0) {
         //파일 개수 얻어오기
+        printf("write 명령 실행\n");
         FILE* fp = popen("ls -l board | wc -l", "r");
         int nfcnt;
         char fcnt[32] = "", fname[128];
         fgets(fcnt, sizeof fcnt, fp);
-        printf(fcnt);
         pclose(fp);
-        nfcnt = atoi(fcnt) + 1;
+        nfcnt = atoi(fcnt);
 
         //파일 생성
         sprintf(fname, "board/%d.txt", nfcnt);
@@ -93,9 +88,9 @@ int tcp_server_worker(int fd, char *buf)
     }
     else if (strcmp(arg[0], "show") == 0) {
         //파일 이름 읽어오기
+        printf("show 명령 실행\n");
         char tmp[2048], tmp2[2048];
         FILE* fp;
-
         sprintf(tmp, "board/%s.txt", arg[1]);
         fp = fopen(tmp, "r");
         fscanf(fp, "%[^\n]%*c", tmp);
@@ -104,9 +99,8 @@ int tcp_server_worker(int fd, char *buf)
         sprintf(send_buf, "제목 : %s\n 내용 : %s\n", tmp, tmp2);
     }
     // 3. 전송
-    //return sendto(fd, send_buf, strlen(send_buf), 0, (struct sockaddr*)paddr, sizeof(*paddr));
-    printf("%s\n", ls_result);
     write(fd, send_buf, strlen(send_buf));
+    printf("실행 결과 값 전송\n");
     close(fd);
 }
 
@@ -128,11 +122,10 @@ int main(void) {
         // 2. 메세지 수신
         clnt_addr_size = sizeof(clnt_addr);
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr, &clnt_addr_size); //연결수락
-        printf("accept 성공\n");
+        printf("연결 성공\n");
         recv_len = read(clnt_sock, buf, sizeof buf);
         if (recv_len < 0) continue;
         buf[recv_len] = '\0';
-        printf(buf);
         // 3. 명령 처리
         tcp_server_worker(clnt_sock,  buf);
     }

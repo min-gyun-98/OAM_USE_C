@@ -1,3 +1,5 @@
+// 서버 코드 UDP
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,7 @@ int udp_server_open(void)
 	{
 		.sin_family = AF_INET,
 		.sin_addr.s_addr = htonl(INADDR_ANY),
-		.sin_port = htons(5303),
+		.sin_port = htons(9000),
 	};
 
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -75,7 +77,7 @@ int udp_server_worker(int fd, struct sockaddr_in *paddr, char *buf)
 		char fcnt[32] = "", fname[128];
 		fgets(fcnt, sizeof fcnt, fp);
 		pclose(fp);
-		nfcnt = atoi(fcnt) + 1;
+		nfcnt = atoi(fcnt);
 
 		//파일 생성
 		sprintf(fname, "board/%d.txt", nfcnt);
@@ -91,10 +93,11 @@ int udp_server_worker(int fd, struct sockaddr_in *paddr, char *buf)
 		
 		sprintf(tmp, "board/%s.txt", arg[1]);
 		fp = fopen(tmp, "r");
-		fscanf(fp, "%[^\n]%*c", tmp);        fscanf( fp, "%[^\n]", tmp2 );
-       		fclose( fp );
+		fscanf(fp, "%[^\n]%*c", tmp);        
+		fscanf( fp, "%[^\n]", tmp2 );
+       	fclose( fp );
 
-       		sprintf( send_buf, "제목: %s\n내용: %s\n", tmp, tmp2 );
+       	sprintf( send_buf, "제목: %s\n내용: %s\n", tmp, tmp2 );
     	}
 
     // 3. 전송

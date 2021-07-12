@@ -1,4 +1,4 @@
-// 클라이언트 시스템(제공)
+// 클라이언트 시스템 UDP
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ void send_cmd(const char *cmd)
 	{
 		.sin_family  = AF_INET,
 		.sin_addr.s_addr = inet_addr("127.0.0.1"),
-		.sin_port = htons(5303)
+		.sin_port = htons(9000)
 	};
 	int addr_len = sizeof addr, recv_len;
 	char buf[2048];
