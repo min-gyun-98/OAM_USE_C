@@ -1,3 +1,5 @@
+// 서버 시스템 TCP
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,14 +49,12 @@ int tcp_server_worker(int fd, char *buf)
     // 2. 아규먼트 별 명령 실행
     if (strcmp(arg[0], "list") == 0) {
         printf("list 명령 실행\n");
-        //char ls_result[2048] = "";
         char flist[128][128] = { 0, };
         FILE* fp = popen("ls -1t board", "r");
         int idx = 0;
 
         // 파일 목록 얻어오기
         fread(ls_result, sizeof ls_result, 1, fp);
-       // printf("%s\n",ls_result);
         for (char* p = strtok(ls_result, "\n\r"); p; p = strtok(NULL, "\n\r")) {
             strcpy(flist[idx++], p);
         }
@@ -96,7 +96,7 @@ int tcp_server_worker(int fd, char *buf)
         fscanf(fp, "%[^\n]%*c", tmp);
         fscanf(fp, "%[^\n]", tmp2);
         fclose(fp);
-        sprintf(send_buf, "제목 : %s\n 내용 : %s\n", tmp, tmp2);
+        sprintf(send_buf, "제목 : %s\n내용 : %s\n", tmp, tmp2);
     }
     // 3. 전송
     write(fd, send_buf, strlen(send_buf));
