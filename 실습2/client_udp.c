@@ -25,11 +25,11 @@ void send_cmd(const char *cmd)
 	printf("%s\n", buf);
 }
 
-int main(int argc, char argv[])
+int main(int argc, char *argv[])
 {
 	char cmd[2048] = "";
-
-	for(int i = 1; i < argc; i++)
+	int i;
+	for(i = 1; i < argc; i++)
 	{
 		strcat(cmd, argv[i]);
 		strcat(cmd, "\n");
